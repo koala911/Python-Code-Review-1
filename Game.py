@@ -8,12 +8,11 @@ from collections import deque
 class Game:
     def __init__(self):
         self.score = Score()
+        self.hand_clicker = HandClicker()
         self.clickers = asyncio.Queue()
-        self.clickers.put_nowait(HandClicker())
         self.game_event_queue = asyncio.Queue()
         self.interface = Interface(self.game_event_queue)
         self.event_loop = asyncio.get_event_loop()
-        self.total_points_per_second = 1
 
     def start_game(self):
         tasks = [
@@ -32,7 +31,7 @@ class Game:
             await asyncio.sleep(1 / FPS)
 
     async def run_interface(self):
-        await self.interface.start_print_score(self.score)
+        await self.interface.start(self.score)
 
     async def run_processing_game_events(self):
         while True:

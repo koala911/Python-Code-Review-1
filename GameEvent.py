@@ -1,9 +1,11 @@
-from Clickers import  *
 from Game import *
 
 
 class GameEvent:
     def __init__(self):
+        pass
+
+    def do_event(self, game):
         pass
 
 
@@ -17,9 +19,15 @@ class BuyAutoClicker(GameEvent):
             new_auto_clicker = self.AutoClickerType()
             await game.clickers.put(new_auto_clicker)
             game.score.increase(-self.AutoClickerType.cost)
-            game.total_points_per_second += new_auto_clicker.cookies_per_second
-            print(game.total_points_per_second)
-
         else:
-            print('Not enough score')
+            print('Not enough points')
+        await asyncio.sleep(0)
+
+
+class HandClick(GameEvent):
+    def __init__(self):
+        super().__init__()
+
+    async def do_event(self, game):
+        game.hand_clicker.click(game.score)
         await asyncio.sleep(0)
