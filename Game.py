@@ -1,6 +1,5 @@
 from Clickers import *
 from GameParameters import *
-from concurrent.futures import CancelledError
 from Interface import *
 from collections import deque
 

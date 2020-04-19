@@ -35,17 +35,19 @@ class AutoClicker(Clicker):
 
 class SimpleClicker(AutoClicker):
     cost = 10
+    init_points_per_sec = 0.33333333333
 
     def __init__(self):
         super().__init__()
         self.delay = 3
-        self.points_per_click = 1
+        self.points_per_click = self.init_points_per_sec * self.delay
 
 
 class UpgradedClicker(AutoClicker):
     cost = 20
+    init_points_per_sec = 1
 
     def __init__(self):
         super().__init__()
         self.delay = 1
-        self.points_per_click = 1
+        self.points_per_click = self.init_points_per_sec * self.delay
