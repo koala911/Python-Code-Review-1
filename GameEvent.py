@@ -19,6 +19,8 @@ class BuyAutoClicker(GameEvent):
             new_auto_clicker = self.AutoClickerType()
             await game.clickers.put(new_auto_clicker)
             game.score.increase(-self.AutoClickerType.cost)
+            game.score.update_points_per_sec(new_auto_clicker.points_per_click / new_auto_clicker.delay)
+            self.AutoClickerType.cost *= INCREASE_COST
         else:
             print('Not enough points')
         await asyncio.sleep(0)

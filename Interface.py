@@ -37,16 +37,17 @@ class Interface:
                 if (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE) or event.type == pygame.QUIT:
                     exit()
                 # hand click
-                if event.type == pygame.MOUSEBUTTONDOWN and self.place_of_main_button.collidepoint(event.pos):
+                if self.hand_clicked(event):
                     await self.game_event_queue.put(HandClick())
                 # buy simple clicker
-                if event.type == pygame.MOUSEBUTTONUP and self.place_of_BuySimpleClicker_button.collidepoint(event.pos):
+                if self.pressed_BuySimpleClicker(event):
                     await self.game_event_queue.put(BuyAutoClicker(SimpleClicker))
                 # buy upgraded clicker
-                if event.type == pygame.MOUSEBUTTONUP and self.place_of_BuyUpgradedClicker_button.collidepoint(event.pos):
+                if self.pressed_BuyUpgradedClicker(event):
                     await self.game_event_queue.put(BuyAutoClicker(UpgradedClicker))
             self.main_surface.fill(COLOUR_OF_FIELD)
             self.render_score(score)
+            self.render_points_per_sec(score)
             self.render_buttons()
             pygame.display.update()
             await asyncio.sleep(1 / FPS)
@@ -61,6 +62,16 @@ class Interface:
             center=(WINDOW_WIDTH // 4 + 9 * (len(str(score))) - 20, WINDOW_HEIGHT // 12)
         )
         self.main_surface.blit(points_text_rendered, place_of_points)
+
+    def render_points_per_sec(self, score):
+        points_per_sec_text_rendered = self.score_text.render('Point/sec: ', 1, COLOUR_OF_TEXT, COLOUR_OF_FIELD)
+        place_of_points_per_sec = points_per_sec_text_rendered.get_rect(center=(WINDOW_WIDTH // 6, WINDOW_HEIGHT // 5))
+        self.main_surface.blit(points_per_sec_text_rendered, place_of_points_per_sec)
+        points_per_sec_text_rendered = self.score_text.render(str(round(score.point_per_sec, 2)), 1, COLOUR_OF_TEXT, COLOUR_OF_FIELD)
+        place_of_points_per_sec = points_per_sec_text_rendered.get_rect(
+            center=(WINDOW_WIDTH // 3 + 9 * (len(str(round(score.point_per_sec, 2)))) - 10, WINDOW_HEIGHT // 5)
+        )
+        self.main_surface.blit(points_per_sec_text_rendered, place_of_points_per_sec)
 
     def render_buttons(self):
         self.render_main_button()
@@ -90,3 +101,13 @@ class Interface:
                          (center[0] - width // 2, center[1] - height // 2, width, height))
 
         self.main_surface.blit(self.BuyUpgradedClicker_button_rendered, self.place_of_BuyUpgradedClicker_button)
+
+    def hand_clicked(self, event):
+        return event.type == pygame.MOUSEBUTTONDOWN and self.place_of_main_button.collidepoint(event.pos)
+
+    def pressed_BuySimpleClicker(self, event):
+        return event.type == pygame.MOUSEBUTTONUP and self.place_of_BuySimpleClicker_button.collidepoint(event.pos)
+
+    def pressed_BuyUpgradedClicker(self, event):
+        return event.type == pygame.MOUSEBUTTONUP and self.place_of_BuyUpgradedClicker_button.collidepoint(event.pos)
+
